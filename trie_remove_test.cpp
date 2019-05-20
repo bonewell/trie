@@ -93,5 +93,6 @@ TEST(TrieRemoveTest, RemoveChildAndCompressWithParentLastChild) {
 
   tree.Remove("One");
 
+  EXPECT_THAT(tree.children, Not(Contains(Key("On"))));
   EXPECT_THAT(tree.children, Contains(Key("Once")));
 }

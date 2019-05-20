@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main(int argc, char* argv[]) {
-  if (argc == 2) {
+  if (argc < 3) {
       std::cerr << "Use: " << argv[0] << " <word_to_search> <word> [<word_2>... <word_n>]\n";
       return -1;
   }

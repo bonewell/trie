@@ -105,6 +105,8 @@ void Node::DeleteElement(Node::Children::const_iterator it) {
       auto child_key = node->children.begin()->first;
       auto child_node = node->children.begin()->second;
       MoveChild(key + child_key, child_node);
+      node->DeleteChild(child_key);
+      delete node;
       DeleteChild(key);
     } else {
       UnmarkChild(key);
@@ -163,7 +165,7 @@ void Node::RemoveElement(std::string_view key) {
 
 void Node::Remove(std::string_view key) {
   RemoveElement(key);
-  Compress(nullptr, "");
+//  Compress(nullptr, "");
 }
 
 std::ostream& operator<<(std::ostream& out, const Trie& tree) {
