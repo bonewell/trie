@@ -7,12 +7,13 @@
 
 struct Data{};  // just to show that we can keep some data in tree
 
+struct Node;
+using Children = std::unordered_map<std::string, Node>;
+
 struct Node {
   bool marker{false};
   const Data* data{nullptr};
-
-  using Children = std::unordered_map<std::string, Node*>;
-  Children children;
+  Children children{};
 
   /**
    * Inserts element with key and data
@@ -21,23 +22,24 @@ struct Node {
    * @param data
    */
   void Insert(std::string key, const Data* data = nullptr);
-  void Remove(std::string_view key);
-
+//  void Remove(std::string_view key);
+//
   using Result = std::pair<bool, const Data*>;
-  Result Find(std::string_view key) const;
-  ~Node() noexcept;
+  Result Find(std::string_view key);
+//  explicit Node(bool marker = false, const Data* data = nullptr,
+//      const Children& children = {});
+  Node& operator[](const std::string& key);
 
 private:
-  Node* AddChild(const std::string& key, bool marker, const Data* data,
-      Node::Children&& children = {});
-  inline void MoveChild(const std::string& key, Node* node);
+  Node& AddChild(const std::string& key, bool marker, const Data* data,
+      const Children& children = {});
+  inline void MoveChild(const std::string& key, Node& node);
   inline void DeleteChild(const std::string& key);
   void MarkChild(const std::string& key, const Data* data);
-  void UnmarkChild(const std::string& key);
-  void RemoveElement(std::string_view key);
-  void DeleteElement(Children::const_iterator it);
-  void Compress(Node* parent, const std::string& key);
-  void Pack(Node* parent, const std::string& key);
+//  void UnmarkChild(const std::string& key);
+//  void RemoveElement(std::string_view key);
+//  void DeleteElement(Children::const_iterator it);
+//  void Compress(const std::string& key);
 };
 
 using Trie = Node;

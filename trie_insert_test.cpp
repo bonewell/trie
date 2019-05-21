@@ -15,10 +15,9 @@ TEST(TrieInsertTest, InsertIntoEmptyTree) {
 
   EXPECT_THAT(tree.children, Contains(Key("One")));
 }
-
 TEST(TrieInsertTest, InsertTwoDifferentElements) {
   Trie tree;
-  tree.children["One"] = new Node{true, nullptr, {}};
+  tree["One"] = Node{true};
 
   tree.Insert("Two");
 
@@ -27,106 +26,109 @@ TEST(TrieInsertTest, InsertTwoDifferentElements) {
 
 TEST(TrieInsertTest, InsertElementWithLongKey) {
   Trie tree;
-  tree.children["In"] = new Node{true, nullptr, {}};
+  tree["In"] = Node{true};
 
   tree.Insert("Inside");
 
-  EXPECT_THAT(tree.children["In"]->children, SizeIs(1));
-  EXPECT_THAT(tree.children["In"]->children, Contains(Key("side")));
+  EXPECT_THAT(tree["In"].children, SizeIs(1));
+  EXPECT_THAT(tree["In"].children, Contains(Key("side")));
 }
 
 TEST(TrieInsertTest, InsertTwoSimilarElements) {
   Trie tree;
-  tree.children["One"] = new Node{true, nullptr, {}};
+  tree["One"] = Node{true};
 
   tree.Insert("Once");
 
   ASSERT_THAT(tree.children, Contains(Key("On")));
-  EXPECT_THAT(tree.children["On"]->children, Contains(Key("e")));
-  EXPECT_THAT(tree.children["On"]->children, Contains(Key("ce")));
+  EXPECT_THAT(tree["On"].children, Contains(Key("e")));
+  EXPECT_THAT(tree["On"].children, Contains(Key("ce")));
 }
 
 TEST(TrieInsertTest, InsertElementWithData) {
   Trie tree;
   auto data = new Data{};
+
   tree.Insert("Data", data);
 
   ASSERT_THAT(tree.children, Contains(Key("Data")));
-  EXPECT_THAT(tree.children["Data"]->data, Eq(data));
+  EXPECT_THAT(tree["Data"].data, Eq(data));
 }
 
 TEST(TrieInsertTest, ElementInsertionSetsTrueMarker) {
   Trie tree;
+
   tree.Insert("One");
 
   ASSERT_THAT(tree.children, Contains(Key("One")));
-  EXPECT_THAT(tree.children["One"]->marker, Eq(true));
+  EXPECT_THAT(tree["One"].marker, Eq(true));
 }
 
 TEST(TrieInsertTest, ElementInsertionSetsFalseMarker) {
   Trie tree;
-  tree.children["One"] = new Node{true, nullptr, {}};
+  tree["One"] = Node{true};
 
   tree.Insert("Once");
 
   ASSERT_THAT(tree.children, Contains(Key("On")));
-  EXPECT_THAT(tree.children["On"]->marker, Eq(false));
+  EXPECT_THAT(tree["On"].marker, Eq(false));
 }
 
 TEST(TrieInsertTest, DeepInsertion) {
   Trie tree;
-  tree.children["De"] = new Node{};
-  tree.children["De"]->children["ep"] = new Node{true, nullptr, {}};
-  tree.children["De"]->children["ad"] = new Node{true, nullptr, {}};
+  tree["De"] = Node{};
+  tree["De"]["ep"] = Node{true};
+  tree["De"]["ad"] = Node{true};
 
   tree.Insert("Deepwater");
 
-  EXPECT_THAT(tree.children["De"]->children["ep"]->children, Contains(Key("water")));
+  EXPECT_THAT(tree["De"]["ep"].children, Contains(Key("water")));
 }
 
 TEST(TrieInsertTest, DeepInsertionOfSimilarElement) {
   Trie tree;
-  tree.children["De"] = new Node{};
-  tree.children["De"]->children["ep"] = new Node{true, nullptr, {}};
-  tree.children["De"]->children["ad"] = new Node{true, nullptr, {}};
+  tree["De"] = Node{};
+  tree["De"]["ep"] = Node{true};
+  tree["De"]["ad"] = Node{true};
 
   tree.Insert("Death");
 
-  ASSERT_THAT(tree.children["De"]->children, Contains(Key("a")));
-  EXPECT_THAT(tree.children["De"]->children["a"]->children, Contains(Key("d")));
-  EXPECT_THAT(tree.children["De"]->children["a"]->children, Contains(Key("th")));
+  ASSERT_THAT(tree["De"].children, Contains(Key("a")));
+  EXPECT_THAT(tree["De"]["a"].children, Contains(Key("d")));
+  EXPECT_THAT(tree["De"]["a"].children, Contains(Key("th")));
 }
 
 TEST(TrieInsertTest, InsertionIsJustMark) {
   Trie tree;
-  tree.children["On"] = new Node{};
-  tree.children["On"]->children["e"] = new Node{true, nullptr, {}};
-  tree.children["On"]->children["ce"] = new Node{true, nullptr, {}};
+  tree["On"] = Node{};
+  tree["On"]["e"] = Node{true};
+  tree["On"]["ce"] = Node{true};
 
   tree.Insert("On");
 
-  EXPECT_THAT(tree.children["On"]->marker, Eq(true));
+  EXPECT_THAT(tree["On"].marker, Eq(true));
 }
 
 TEST(TrieInsertTest, KeepChildrenForReplacedElement) {
   Trie tree;
-  tree.children["On"] = new Node{};
-  tree.children["On"]->children["e"] = new Node{true, nullptr, {}};
-  tree.children["On"]->children["ce"] = new Node{true, nullptr, {}};
+  tree["On"] = Node{};
+  tree["On"]["e"] = Node{true};
+  tree["On"]["ce"] = Node{true};
 
   tree.Insert("On");
 
-  EXPECT_THAT(tree.children["On"]->children, Contains(Key("e")));
-  EXPECT_THAT(tree.children["On"]->children, Contains(Key("ce")));
+  EXPECT_THAT(tree["On"].children, Contains(Key("e")));
+  EXPECT_THAT(tree["On"].children, Contains(Key("ce")));
 }
+
 
 TEST(TrieInsertTest, InsertElementWithShortKey) {
   Trie tree;
-  tree.children["Deepwater"] = new Node{true, nullptr, {}};
+  tree["Deepwater"] = Node{true};
 
   tree.Insert("Deep");
 
   ASSERT_THAT(tree.children, Contains(Key("Deep")));
-  EXPECT_THAT(tree.children["Deep"]->children, SizeIs(1));
-  EXPECT_THAT(tree.children["Deep"]->children, Contains(Key("water")));
+  EXPECT_THAT(tree["Deep"].children, SizeIs(1));
+  EXPECT_THAT(tree["Deep"].children, Contains(Key("water")));
 }
