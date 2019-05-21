@@ -1,0 +1,35 @@
+language: cpp
+matrix:
+    include:
+        - os: osx
+          osx_image: xcode10.2
+          compiler: clang
+          install:
+              - pip install conan
+              - conan user
+          script:
+              - conan install . --build missing
+              - cmake .
+              - cmake --build .
+              - ctest
+        - os: linux
+          dist: xenial
+          compiler: gcc
+          addons:
+              apt:
+                  sources:
+                      - ubuntu-toolchain-r-test
+                  packages:
+                      - g++-8
+          env:
+              - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+          install:
+              - pip install --user conan
+              - conan user
+          script:
+              - conan install . -s compiler.libcxx=libstdc++11 --build missing
+              - cmake .
+              - cmake --build .
+              - ctest
+          before_install:
+              - eval "${MATRIX_EVAL}"
