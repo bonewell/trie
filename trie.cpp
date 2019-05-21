@@ -65,7 +65,7 @@ void Node::MoveChild(const std::string& key, Node& node) {
 }
 
 void Node::MarkChild(const std::string& key, const Data* data) {
-  auto node = children[key];
+  auto& node = children[key];
   node.marker = true;
   node.data = data;
 }
@@ -107,11 +107,11 @@ void Node::Insert(std::string key, const Data* data) {
   } else if (k == key.substr(0, pos)) {
     children[k].Insert(key.substr(pos), data);
   } else if (k.substr(0, pos) == key) {
-    auto node = AddChild(key, true, data);
+    auto& node = AddChild(key, true, data);
     node.MoveChild(k.substr(pos), children[k]);
     DeleteChild(k);
   } else {
-    auto node = AddChild(k.substr(0, pos), false, nullptr);
+    auto& node = AddChild(k.substr(0, pos), false, nullptr);
     node.AddChild(key.substr(pos), true, data);
     node.MoveChild(k.substr(pos), children[k]);
     DeleteChild(k);
