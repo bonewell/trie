@@ -37,6 +37,7 @@ private:
   void RemoveElement(std::string_view key);
   void DeleteElement(Children::const_iterator it);
   void Compress(Node* parent, const std::string& key);
+  void Pack(Node* parent, const std::string& key);
 };
 
 using Trie = Node;

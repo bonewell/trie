@@ -154,12 +154,23 @@ void Node::Compress(Node* parent, const std::string& key) {
   }
 }
 
+void Node::Pack(Node* node, const std::string& key) {
+  if (!node->marker && node->children.size() == 1) {
+    auto key_child = node->children.begin()->first;
+    auto node_child = node->children.begin()->second;
+    MoveChild(key + key_child, node_child);
+    delete node;
+    DeleteChild(key);
+  }
+}
+
 void Node::RemoveElement(std::string_view key) {
   const auto& [it, pos] = FindSimilarKey(children, key);
   if (it->first == key) {
     DeleteElement(it);
   } else if (it->first == key.substr(0, pos)) {
     it->second->Remove(key.substr(pos));
+    Pack(it->second, it->first);
   }
 }
 
