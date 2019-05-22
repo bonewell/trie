@@ -4,17 +4,19 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 
 struct Data{};  // just to show that we can keep some data in tree
 
 struct Node;
-using Children = std::shared_ptr<std::unordered_map<std::string, Node>>;
+using ChildrenList = std::unordered_map<std::string, Node>;
+using Children = std::shared_ptr<ChildrenList>;
 
 struct Node {
   bool marker{false};
   const Data* data{nullptr};
-  Children children{};
+  Children children = std::make_shared<ChildrenList>();
 
   /**
    * Inserts element with key and data
@@ -33,7 +35,7 @@ struct Node {
 
 private:
   Node& AddChild(const std::string& key, bool marker, const Data* data,
-      const Children& children = {});
+      Children children = std::make_shared<ChildrenList>());
   inline void MoveChild(const std::string& key, Node& node);
   inline void DeleteChild(const std::string& key);
   void MarkChild(const std::string& key, const Data* data);

@@ -1,8 +1,6 @@
 #include "trie.h"
 
 #include <algorithm>
-#include <iterator>
-#include <string_view>
 #include <utility>
 
 namespace {
@@ -24,7 +22,7 @@ size_t Compare(std::string_view lhs, std::string_view rhs) {
   return min;
 }
 
-std::pair<const std::string&, size_t>
+std::pair<std::string, size_t>
 FindSimilarKey(const Children& children, std::string_view key) {
   for (const auto& c: *children) {
     auto pos = Compare(c.first, key);
@@ -54,8 +52,7 @@ Node& Node::operator[](const std::string& key) {
   return (*children)[key];
 }
 
-Node& Node::AddChild(const std::string& key, bool marker, const Data* data,
-    const Children& children) {
+Node& Node::AddChild(const std::string& key, bool marker, const Data* data, Children children) {
   this->children->emplace(key, Node{marker, data, children});
   return (*this->children)[key];
 }
