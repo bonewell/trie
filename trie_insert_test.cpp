@@ -13,7 +13,7 @@ TEST(TrieInsertTest, InsertIntoEmptyTree) {
 
   tree.Insert("One");
 
-  EXPECT_THAT(tree.children, Contains(Key("One")));
+  EXPECT_THAT(*tree.children, Contains(Key("One")));
 }
 TEST(TrieInsertTest, InsertTwoDifferentElements) {
   Trie tree;
@@ -21,7 +21,7 @@ TEST(TrieInsertTest, InsertTwoDifferentElements) {
 
   tree.Insert("Two");
 
-  EXPECT_THAT(tree.children, Contains(Key("Two")));
+  EXPECT_THAT(*tree.children, Contains(Key("Two")));
 }
 
 TEST(TrieInsertTest, InsertElementWithLongKey) {
@@ -30,8 +30,8 @@ TEST(TrieInsertTest, InsertElementWithLongKey) {
 
   tree.Insert("Inside");
 
-  EXPECT_THAT(tree["In"].children, SizeIs(1));
-  EXPECT_THAT(tree["In"].children, Contains(Key("side")));
+  EXPECT_THAT(*tree["In"].children, SizeIs(1));
+  EXPECT_THAT(*tree["In"].children, Contains(Key("side")));
 }
 
 TEST(TrieInsertTest, InsertTwoSimilarElements) {
@@ -40,9 +40,9 @@ TEST(TrieInsertTest, InsertTwoSimilarElements) {
 
   tree.Insert("Once");
 
-  ASSERT_THAT(tree.children, Contains(Key("On")));
-  EXPECT_THAT(tree["On"].children, Contains(Key("e")));
-  EXPECT_THAT(tree["On"].children, Contains(Key("ce")));
+  ASSERT_THAT(*tree.children, Contains(Key("On")));
+  EXPECT_THAT(*tree["On"].children, Contains(Key("e")));
+  EXPECT_THAT(*tree["On"].children, Contains(Key("ce")));
 }
 
 TEST(TrieInsertTest, InsertElementWithData) {
@@ -51,7 +51,7 @@ TEST(TrieInsertTest, InsertElementWithData) {
 
   tree.Insert("Data", data);
 
-  ASSERT_THAT(tree.children, Contains(Key("Data")));
+  ASSERT_THAT(*tree.children, Contains(Key("Data")));
   EXPECT_THAT(tree["Data"].data, Eq(data));
 }
 
@@ -60,7 +60,7 @@ TEST(TrieInsertTest, ElementInsertionSetsTrueMarker) {
 
   tree.Insert("One");
 
-  ASSERT_THAT(tree.children, Contains(Key("One")));
+  ASSERT_THAT(*tree.children, Contains(Key("One")));
   EXPECT_THAT(tree["One"].marker, Eq(true));
 }
 
@@ -70,7 +70,7 @@ TEST(TrieInsertTest, ElementInsertionSetsFalseMarker) {
 
   tree.Insert("Once");
 
-  ASSERT_THAT(tree.children, Contains(Key("On")));
+  ASSERT_THAT(*tree.children, Contains(Key("On")));
   EXPECT_THAT(tree["On"].marker, Eq(false));
 }
 
@@ -82,7 +82,7 @@ TEST(TrieInsertTest, DeepInsertion) {
 
   tree.Insert("Deepwater");
 
-  EXPECT_THAT(tree["De"]["ep"].children, Contains(Key("water")));
+  EXPECT_THAT(*tree["De"]["ep"].children, Contains(Key("water")));
 }
 
 TEST(TrieInsertTest, DeepInsertionOfSimilarElement) {
@@ -93,9 +93,9 @@ TEST(TrieInsertTest, DeepInsertionOfSimilarElement) {
 
   tree.Insert("Death");
 
-  ASSERT_THAT(tree["De"].children, Contains(Key("a")));
-  EXPECT_THAT(tree["De"]["a"].children, Contains(Key("d")));
-  EXPECT_THAT(tree["De"]["a"].children, Contains(Key("th")));
+  ASSERT_THAT(*tree["De"].children, Contains(Key("a")));
+  EXPECT_THAT(*tree["De"]["a"].children, Contains(Key("d")));
+  EXPECT_THAT(*tree["De"]["a"].children, Contains(Key("th")));
 }
 
 TEST(TrieInsertTest, InsertionIsJustMark) {
@@ -117,8 +117,8 @@ TEST(TrieInsertTest, KeepChildrenForReplacedElement) {
 
   tree.Insert("On");
 
-  EXPECT_THAT(tree["On"].children, Contains(Key("e")));
-  EXPECT_THAT(tree["On"].children, Contains(Key("ce")));
+  EXPECT_THAT(*tree["On"].children, Contains(Key("e")));
+  EXPECT_THAT(*tree["On"].children, Contains(Key("ce")));
 }
 
 
@@ -128,7 +128,7 @@ TEST(TrieInsertTest, InsertElementWithShortKey) {
 
   tree.Insert("Deep");
 
-  ASSERT_THAT(tree.children, Contains(Key("Deep")));
-  EXPECT_THAT(tree["Deep"].children, SizeIs(1));
-  EXPECT_THAT(tree["Deep"].children, Contains(Key("water")));
+  ASSERT_THAT(*tree.children, Contains(Key("Deep")));
+  EXPECT_THAT(*tree["Deep"].children, SizeIs(1));
+  EXPECT_THAT(*tree["Deep"].children, Contains(Key("water")));
 }

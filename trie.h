@@ -8,7 +8,7 @@
 struct Data{};  // just to show that we can keep some data in tree
 
 struct Node;
-using Children = std::unordered_map<std::string, Node>;
+using Children = std::shared_ptr<std::unordered_map<std::string, Node>>;
 
 struct Node {
   bool marker{false};
