@@ -42,11 +42,6 @@ std::ostream& PrintChildren(std::ostream& out , const Children& children, int de
   return out;
 }
 }  // namespace
-//
-//Node::Node(bool marker, const Data* data, const Children& children)
-//    : marker{marker},
-//      data{data},
-//      children{children} {}
 
 Node& Node::operator[](const std::string& key) {
   return (*children)[key];
@@ -67,33 +62,32 @@ void Node::MarkChild(const std::string& key, const Data* data) {
   node.data = data;
 }
 
-//void Node::UnmarkChild(const std::string& key) {
-//  auto node = children[key];
-//  node.marker = false;
-//  node.data = nullptr;
-//}
+void Node::UnmarkChild(const std::string& key) {
+  auto& node = (*children)[key];
+  node.marker = false;
+  node.data = nullptr;
+}
 
 void Node::DeleteChild(const std::string& key) {
   children->erase(key);
 }
 
-//void Node::DeleteElement(Children::const_iterator it) {
-//  if (it->second.marker) {
-//    auto key = it->first;
-//    auto node = it->second;
-//    if (node.children.empty()) {
-//      DeleteChild(key);
-//    } else if (node.children.size() == 1) {
-//      auto child_key = node.children.begin()->first;
-//      auto child_node = node.children.begin()->second;
-//      MoveChild(key + child_key, child_node);
-//      node.DeleteChild(child_key);
-//      DeleteChild(key);
-//    } else {
-//      UnmarkChild(key);
-//    }
-//  }
-//}
+void Node::DeleteElement(const std::string& key) {
+  auto& node = (*children)[key];
+  if (node.marker) {
+    if (node.children->empty()) {
+      DeleteChild(key);
+    } else if (node.children->size() == 1) {
+      auto child_key = node.children->begin()->first;
+      auto child_node = node.children->begin()->second;
+      MoveChild(key + child_key, child_node);
+      node.DeleteChild(child_key);
+      DeleteChild(key);
+    } else {
+      UnmarkChild(key);
+    }
+  }
+}
 
 void Node::Insert(std::string key, const Data* data) {
   const auto& [k, pos] = FindSimilarKey(children, key);
@@ -128,32 +122,32 @@ Node::Result Node::Find(std::string_view key) {
   return {false, nullptr};
 }
 
-//void Node::Compress(const std::string& key) {
-//  auto node = children[key];
-//  if (!node.marker && node.children.size() == 1) {
-//    auto key_child = node.children.begin()->first;
-//    auto node_child = node.children.begin()->second;
-//    MoveChild(key + key_child, node_child);
-//    DeleteChild(key);
-//  }
-//}
-//
-//void Node::RemoveElement(std::string_view key) {
-//  const auto& [it, pos] = FindSimilarKey(children, key);
-//  if (pos > 0) {
-//    if (it->first == key) {
-//      DeleteElement(it);
-//    } else if (it->first == key.substr(0, pos)) {
-//      it->second.Remove(key.substr(pos));
-//      Compress(it->first);
-//    }
-//  }
-//}
-//
-//void Node::Remove(std::string_view key) {
-//  RemoveElement(key);
-//}
-//
+void Node::Compress(const std::string& key) {
+  auto& node = (*children)[key];
+  if (!node.marker && node.children->size() == 1) {
+    auto key_child = node.children->begin()->first;
+    auto node_child = node.children->begin()->second;
+    MoveChild(key + key_child, node_child);
+    DeleteChild(key);
+  }
+}
+
+void Node::RemoveElement(std::string_view key) {
+  const auto& [k, pos] = FindSimilarKey(children, key);
+  if (pos > 0) {
+    if (k == key) {
+      DeleteElement(k);
+    } else if (k == key.substr(0, pos)) {
+      (*children)[k].Remove(key.substr(pos));
+      Compress(k);
+    }
+  }
+}
+
+void Node::Remove(std::string_view key) {
+  RemoveElement(key);
+}
+
 std::ostream& operator<<(std::ostream& out, const Trie& tree) {
   return PrintChildren(out, tree.children, 0);
 }

@@ -10,89 +10,89 @@ using ::testing::Not;
 
 TEST(TrieRemoveTest, RemoveElementFromSignleElementTree) {
   Trie tree;
-  tree.children["One"] = new Node{true, nullptr, {}};
+  tree["One"] = Node{true};
 
   tree.Remove("One");
 
-  EXPECT_THAT(tree.children.empty(), Eq(true));
+  EXPECT_THAT(tree.children->empty(), Eq(true));
 }
 
 TEST(TrieRemoveTest, RemoveElementWithoutChildrenFromFirstLevel) {
   Trie tree;
-  tree.children["One"] = new Node{true, nullptr, {}};
-  tree.children["Two"] = new Node{true, nullptr, {}};
+  tree["One"] = Node{true};
+  tree["Two"] = Node{true};
 
   tree.Remove("One");
 
-  EXPECT_THAT(tree.children, Not(Contains(Key("One"))));
+  EXPECT_THAT(*tree.children, Not(Contains(Key("One"))));
 }
 
 TEST(TrieRemoveTest, NoElementToRemoveFomFirstLevel) {
   Trie tree;
-  tree.children["On"] = new Node{};
-  tree.children["On"]->children["e"] = new Node{true, nullptr, {}};
-  tree.children["On"]->children["ce"] = new Node{true, nullptr, {}};
+  tree["On"] = Node{};
+  tree["On"]["e"] = Node{true};
+  tree["On"]["ce"] = Node{true};
 
   tree.Remove("On");
 
-  EXPECT_THAT(tree.children, Contains(Key("On")));
+  EXPECT_THAT(*tree.children, Contains(Key("On")));
 }
 
 TEST(TrieRemoveTest, UnmarkRootElementWithChildren) {
   Trie tree;
-  tree.children["Deep"] = new Node{true, nullptr, {}};
-  tree.children["Deep"]->children["water"] = new Node{true, nullptr, {}};
-  tree.children["Deep"]->children["sea"] = new Node{true, nullptr, {}};
+  tree["Deep"] = Node{true};
+  tree["Deep"]["water"] = Node{true};
+  tree["Deep"]["sea"] = Node{true};
 
   tree.Remove("Deep");
 
-  ASSERT_THAT(tree.children, Contains(Key("Deep")));
-  EXPECT_THAT(tree.children["Deep"]->marker, Eq(false));
+  ASSERT_THAT(*tree.children, Contains(Key("Deep")));
+  EXPECT_THAT(tree["Deep"].marker, Eq(false));
 }
 
 TEST(TrieRemoveTest, MoveUpChildElementIfGrandParentIsMarked) {
   Trie tree;
-  tree.children["Deep"] = new Node{true, nullptr, {}};
-  tree.children["Deep"]->children["er"] = new Node{true, nullptr, {}};
-  tree.children["Deep"]->children["er"]->children["sea"] = new Node{true, nullptr, {}};
+  tree["Deep"] = Node{true};
+  tree["Deep"]["er"] = Node{true};
+  tree["Deep"]["er"]["sea"] = Node{true};
 
   tree.Remove("Deeper");
 
-  ASSERT_THAT(tree.children["Deep"]->children, Not(Contains(Key("er"))));
-  EXPECT_THAT(tree.children["Deep"]->children, Contains(Key("ersea")));
+  ASSERT_THAT(*tree["Deep"].children, Not(Contains(Key("er"))));
+  EXPECT_THAT(*tree["Deep"].children, Contains(Key("ersea")));
 }
 
 TEST(TrieRemoveTest, RemoveParentAndCompressWithSingleChild) {
   Trie tree;
-  tree.children["Deep"] = new Node{true, nullptr, {}};
-  tree.children["Deep"]->children["sea"] = new Node{true, nullptr, {}};
+  tree["Deep"] = Node{true};
+  tree["Deep"]["sea"] = Node{true};
 
   tree.Remove("Deep");
 
-  EXPECT_THAT(tree.children, Contains(Key("Deepsea")));
-  EXPECT_THAT(tree.children, Not(Contains(Key("Deep"))));
+  EXPECT_THAT(*tree.children, Contains(Key("Deepsea")));
+  EXPECT_THAT(*tree.children, Not(Contains(Key("Deep"))));
 }
 
 TEST(TrieRemoveTest, RemoveElementFromSecondLevel) {
   Trie tree;
-  tree.children["On"] = new Node{};
-  tree.children["On"]->children["e"] = new Node{true, nullptr, {}};
-  tree.children["On"]->children["ce"] = new Node{true, nullptr, {}};
-  tree.children["On"]->children["ion"] = new Node{true, nullptr, {}};
+  tree["On"] = Node{};
+  tree["On"]["e"] = Node{true};
+  tree["On"]["ce"] = Node{true};
+  tree["On"]["ion"] = Node{true};
 
   tree.Remove("Once");
 
-  EXPECT_THAT(tree.children["On"]->children, Not(Contains(Key("ce"))));
+  EXPECT_THAT(*tree["On"].children, Not(Contains(Key("ce"))));
 }
 
 TEST(TrieRemoveTest, RemoveChildAndCompressWithParentLastChild) {
   Trie tree;
-  tree.children["On"] = new Node{};
-  tree.children["On"]->children["e"] = new Node{true, nullptr, {}};
-  tree.children["On"]->children["ce"] = new Node{true, nullptr, {}};
+  tree["On"] = Node{};
+  tree["On"]["e"] = Node{true};
+  tree["On"]["ce"] = Node{true};
 
   tree.Remove("One");
 
-  EXPECT_THAT(tree.children, Not(Contains(Key("On"))));
-  EXPECT_THAT(tree.children, Contains(Key("Once")));
+  EXPECT_THAT(*tree.children, Not(Contains(Key("On"))));
+  EXPECT_THAT(*tree.children, Contains(Key("Once")));
 }

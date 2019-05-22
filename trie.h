@@ -25,12 +25,10 @@ struct Node {
    * @param data
    */
   void Insert(std::string key, const Data* data = nullptr);
-//  void Remove(std::string_view key);
-//
+  void Remove(std::string_view key);
+
   using Result = std::pair<bool, const Data*>;
   Result Find(std::string_view key);
-//  explicit Node(bool marker = false, const Data* data = nullptr,
-//      const Children& children = {});
   Node& operator[](const std::string& key);
 
 private:
@@ -39,10 +37,10 @@ private:
   inline void MoveChild(const std::string& key, Node& node);
   inline void DeleteChild(const std::string& key);
   void MarkChild(const std::string& key, const Data* data);
-//  void UnmarkChild(const std::string& key);
-//  void RemoveElement(std::string_view key);
-//  void DeleteElement(Children::const_iterator it);
-//  void Compress(const std::string& key);
+  void UnmarkChild(const std::string& key);
+  void RemoveElement(std::string_view key);
+  void DeleteElement(const std::string& key);
+  void Compress(const std::string& key);
 };
 
 using Trie = Node;
