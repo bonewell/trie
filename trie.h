@@ -2,6 +2,7 @@
 #define TRIE_H
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
