@@ -3,20 +3,26 @@
 
 #include "trie.h"
 
+struct TestingTree : public Trie {
+public:
+  using Node::children;
+  using Node::operator[];
+};
+
 using ::testing::Contains;
 using ::testing::Eq;
 using ::testing::Key;
 using ::testing::SizeIs;
 
 TEST(TrieInsertTest, InsertIntoEmptyTree) {
-  Trie tree;
+  TestingTree tree;
 
   tree.Insert("One");
 
   EXPECT_THAT(*tree.children, Contains(Key("One")));
 }
 TEST(TrieInsertTest, InsertTwoDifferentElements) {
-  Trie tree;
+  TestingTree tree;
   tree["One"] = Node{true};
 
   tree.Insert("Two");
@@ -25,7 +31,7 @@ TEST(TrieInsertTest, InsertTwoDifferentElements) {
 }
 
 TEST(TrieInsertTest, InsertElementWithLongKey) {
-  Trie tree;
+  TestingTree tree;
   tree["In"] = Node{true};
 
   tree.Insert("Inside");
@@ -35,7 +41,7 @@ TEST(TrieInsertTest, InsertElementWithLongKey) {
 }
 
 TEST(TrieInsertTest, InsertTwoSimilarElements) {
-  Trie tree;
+  TestingTree tree;
   tree["One"] = Node{true};
 
   tree.Insert("Once");
@@ -46,7 +52,7 @@ TEST(TrieInsertTest, InsertTwoSimilarElements) {
 }
 
 TEST(TrieInsertTest, InsertElementWithData) {
-  Trie tree;
+  TestingTree tree;
   auto data = new Data{};
 
   tree.Insert("Data", data);
@@ -56,7 +62,7 @@ TEST(TrieInsertTest, InsertElementWithData) {
 }
 
 TEST(TrieInsertTest, ElementInsertionSetsTrueMarker) {
-  Trie tree;
+  TestingTree tree;
 
   tree.Insert("One");
 
@@ -65,7 +71,7 @@ TEST(TrieInsertTest, ElementInsertionSetsTrueMarker) {
 }
 
 TEST(TrieInsertTest, ElementInsertionSetsFalseMarker) {
-  Trie tree;
+  TestingTree tree;
   tree["One"] = Node{true};
 
   tree.Insert("Once");
@@ -75,7 +81,7 @@ TEST(TrieInsertTest, ElementInsertionSetsFalseMarker) {
 }
 
 TEST(TrieInsertTest, DeepInsertion) {
-  Trie tree;
+  TestingTree tree;
   tree["De"] = Node{};
   tree["De"]["ep"] = Node{true};
   tree["De"]["ad"] = Node{true};
@@ -86,7 +92,7 @@ TEST(TrieInsertTest, DeepInsertion) {
 }
 
 TEST(TrieInsertTest, DeepInsertionOfSimilarElement) {
-  Trie tree;
+  TestingTree tree;
   tree["De"] = Node{};
   tree["De"]["ep"] = Node{true};
   tree["De"]["ad"] = Node{true};
@@ -99,7 +105,7 @@ TEST(TrieInsertTest, DeepInsertionOfSimilarElement) {
 }
 
 TEST(TrieInsertTest, InsertionIsJustMark) {
-  Trie tree;
+  TestingTree tree;
   tree["On"] = Node{};
   tree["On"]["e"] = Node{true};
   tree["On"]["ce"] = Node{true};
@@ -110,7 +116,7 @@ TEST(TrieInsertTest, InsertionIsJustMark) {
 }
 
 TEST(TrieInsertTest, KeepChildrenForReplacedElement) {
-  Trie tree;
+  TestingTree tree;
   tree["On"] = Node{};
   tree["On"]["e"] = Node{true};
   tree["On"]["ce"] = Node{true};
@@ -123,7 +129,7 @@ TEST(TrieInsertTest, KeepChildrenForReplacedElement) {
 
 
 TEST(TrieInsertTest, InsertElementWithShortKey) {
-  Trie tree;
+  TestingTree tree;
   tree["Deepwater"] = Node{true};
 
   tree.Insert("Deep");

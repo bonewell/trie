@@ -3,13 +3,19 @@
 
 #include "trie.h"
 
+struct TestingTrie : public Trie {
+public:
+  using Node::children;
+  using Node::operator[];
+};
+
 using ::testing::Contains;
 using ::testing::Eq;
 using ::testing::Key;
 using ::testing::Not;
 
 TEST(TrieRemoveTest, RemoveElementFromSignleElementTree) {
-  Trie tree;
+  TestingTrie tree;
   tree["One"] = Node{true};
 
   tree.Remove("One");
@@ -18,7 +24,7 @@ TEST(TrieRemoveTest, RemoveElementFromSignleElementTree) {
 }
 
 TEST(TrieRemoveTest, RemoveElementWithoutChildrenFromFirstLevel) {
-  Trie tree;
+  TestingTrie tree;
   tree["One"] = Node{true};
   tree["Two"] = Node{true};
 
@@ -28,7 +34,7 @@ TEST(TrieRemoveTest, RemoveElementWithoutChildrenFromFirstLevel) {
 }
 
 TEST(TrieRemoveTest, NoElementToRemoveFomFirstLevel) {
-  Trie tree;
+  TestingTrie tree;
   tree["On"] = Node{};
   tree["On"]["e"] = Node{true};
   tree["On"]["ce"] = Node{true};
@@ -39,7 +45,7 @@ TEST(TrieRemoveTest, NoElementToRemoveFomFirstLevel) {
 }
 
 TEST(TrieRemoveTest, UnmarkRootElementWithChildren) {
-  Trie tree;
+  TestingTrie tree;
   tree["Deep"] = Node{true};
   tree["Deep"]["water"] = Node{true};
   tree["Deep"]["sea"] = Node{true};
@@ -51,7 +57,7 @@ TEST(TrieRemoveTest, UnmarkRootElementWithChildren) {
 }
 
 TEST(TrieRemoveTest, MoveUpChildElementIfGrandParentIsMarked) {
-  Trie tree;
+  TestingTrie tree;
   tree["Deep"] = Node{true};
   tree["Deep"]["er"] = Node{true};
   tree["Deep"]["er"]["sea"] = Node{true};
@@ -63,7 +69,7 @@ TEST(TrieRemoveTest, MoveUpChildElementIfGrandParentIsMarked) {
 }
 
 TEST(TrieRemoveTest, RemoveParentAndCompressWithSingleChild) {
-  Trie tree;
+  TestingTrie tree;
   tree["Deep"] = Node{true};
   tree["Deep"]["sea"] = Node{true};
 
@@ -74,7 +80,7 @@ TEST(TrieRemoveTest, RemoveParentAndCompressWithSingleChild) {
 }
 
 TEST(TrieRemoveTest, RemoveElementFromSecondLevel) {
-  Trie tree;
+  TestingTrie tree;
   tree["On"] = Node{};
   tree["On"]["e"] = Node{true};
   tree["On"]["ce"] = Node{true};
@@ -86,7 +92,7 @@ TEST(TrieRemoveTest, RemoveElementFromSecondLevel) {
 }
 
 TEST(TrieRemoveTest, RemoveChildAndCompressWithParentLastChild) {
-  Trie tree;
+  TestingTrie tree;
   tree["On"] = Node{};
   tree["On"]["e"] = Node{true};
   tree["On"]["ce"] = Node{true};
