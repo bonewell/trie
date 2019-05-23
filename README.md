@@ -9,3 +9,12 @@ cmake ..
 cmake -build .
 ```
 
+# Run test
+```Shell
+ctest
+```
+
+# Run
+```Shell
+./bin/trie
+```
