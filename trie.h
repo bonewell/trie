@@ -27,9 +27,9 @@ public:
    * Inserts element with key and data
    * If key already exists, data will be replace by new one.
    */
-  void Insert(std::string key, const Data* data = nullptr);
+  void Insert(std::string_view key, const Data* data = nullptr);
   void Remove(std::string_view key);
-  Result Find(std::string_view key);
+  Result Find(std::string_view key) const;
 };
 
 std::ostream& operator<<(std::ostream& out, const Trie& tree);
