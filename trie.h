@@ -21,7 +21,8 @@ struct Node {
   Node& operator[](const std::string& key);
 };
 
-struct Trie : public Node {
+struct Trie : protected Node {
+public:
   /**
    * Inserts element with key and data
    * If key already exists, data will be replace by new one.
