@@ -5,13 +5,15 @@ matrix:
           osx_image: xcode10.2
           compiler: clang
           install:
-              - pip install conan
+              - pip install conan cpp-coveralls
               - conan user
           script:
               - conan install . --build missing
-              - cmake .
+              - cmake -DCMAKE_BUILD_TYPE=Debug .
               - cmake --build .
               - ctest
+          after_success:
+              - coveralls --exclude CMakeFiles --gcov-options '\-lp'
         - os: linux
           dist: xenial
           compiler: gcc
@@ -24,12 +26,14 @@ matrix:
           env:
               - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
           install:
-              - pip install --user conan
+              - pip install --user conan cpp-coveralls
               - conan user
           script:
               - conan install . -s compiler.libcxx=libstdc++11 --build missing
-              - cmake .
+              - cmake -DCMAKE_BUILD_TYPE=Debug .
               - cmake --build .
               - ctest
           before_install:
               - eval "${MATRIX_EVAL}"
+          after_success:
+              - coveralls --gcov gcov-8 --exclude CMakeFiles --gcov-options '\-lp'

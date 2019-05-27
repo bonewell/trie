@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
   "trie.cpp"
 )
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME} PRIVATE  -fprofile-arcs -ftest-coverage)
 
 enable_testing()
 
@@ -23,5 +24,7 @@ add_executable(${UNIT_TEST}
 target_compile_features(${UNIT_TEST} PRIVATE cxx_std_17)
 target_link_libraries(${UNIT_TEST}
   CONAN_PKG::gtest
+  -fprofile-arcs
+  -ftest-coverage
 )
 add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
